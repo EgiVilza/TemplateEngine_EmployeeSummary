@@ -10,10 +10,12 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+//Array of objects for each employee
 let employeeData = []
 
 addEmployee()
 
+//Function to initiate questionare to add employee
 function addEmployee() {
     inquirer
     .prompt([
@@ -25,12 +27,15 @@ function addEmployee() {
         },
     ])
     .then((data) => {
+        //Depending on the initial response, different questions will be asked
+        //based on the employee role
         switch (`${data.role}`) {
             case 'Engineer':
                 engineerInfo()
                 break;
 
             case 'Manager':
+                //Function to check if a manager is already listed in the data
                 checkManager()
                 break;
             
@@ -41,6 +46,7 @@ function addEmployee() {
             case 'quit':
                 break;
         }
+        //Creates and updates the team.html file in the output folder
         fs.writeFile('output/team.html', render(employeeData), function(err){
             if(err) throw err;
         })
@@ -48,7 +54,7 @@ function addEmployee() {
     });
 }
 
-
+//Questionare for engineer employee
 function engineerInfo() {
     inquirer
     .prompt([
@@ -74,15 +80,18 @@ function engineerInfo() {
         },
     ])
     .then((data) => {
+        //create engineer object based on the class
         const engineerEmployee = new Engineer(
             `${data.name}`,`${data.id}`,`${data.email}`,`${data.github}`
             )
          
        pushToObjectArray(engineerEmployee)
+       //Goes back to the original quesiton to add more employees
        addEmployee()
     });
 }
 
+//Questionare for intern employee
 function internInfo() {
     inquirer
     .prompt([
@@ -108,6 +117,7 @@ function internInfo() {
         },
     ])
     .then((data) => {
+        //create intern object based on the class
         const internEmployee = new Intern(
             `${data.name}`,`${data.id}`,`${data.email}`,`${data.school}`
             )
@@ -117,9 +127,13 @@ function internInfo() {
     });
 }
 
+//Function to check if there is already a manager employee (limit to 1 manager)
 function checkManager() {
+    //Looks for the officeNumber data in the employeeData array
     const found = employeeData.find(element => element.officeNumber != null)
 
+    //If data is not found, then questionare is initiated, otherwise it goes back
+    //to the original question
     if (found === undefined) {
         managerInfo()
     }
@@ -129,8 +143,8 @@ function checkManager() {
     }
 }
 
+//Questionare for  manager employee
 function managerInfo() {
-    
     inquirer
     .prompt([
         {
@@ -155,6 +169,7 @@ function managerInfo() {
         },
     ])
     .then((data) => {
+        //create manager object based on the class
         const managerEmployee = new Manager(
             `${data.name}`,`${data.id}`,`${data.email}`,`${data.officeNumber}`
             )
@@ -164,6 +179,7 @@ function managerInfo() {
     });
 }
 
+//Function to push the objects, created from the questionares, to the employeeData array
 function pushToObjectArray(data) {
     employeeData.push(data)
 }
