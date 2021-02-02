@@ -10,10 +10,109 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
-
+let employeeData = []
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
 
+//Create variable Array of objects
+//Inquirer
+//Ask for role
+//Create sub functions for each role that will use the classes
+//Store the information into an array of objects
+
+render(employeeData)
+addEmployee()
+
+function addEmployee() {
+    inquirer
+    .prompt([
+        {
+        type: 'list',
+        message: 'Please choose a role to add or select quit to end',
+        name: 'role',
+        choices: ['Engineer', 'Manager', 'Intern', `Quit`],
+        },
+    ])
+    .then((data) => {
+        switch (`${data.role}`) {
+            case 'Engineer':
+                engineerInfo()
+                break;
+
+            case 'Manager':
+                managerInfo()
+                break;
+            
+            case 'Intern':
+                internInfo()
+                break;
+
+            case 'quit':
+                render(employeeData)
+                break;
+        }
+    });
+}
+
+
+function engineerInfo() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is your name?',
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'What is your id?',
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'What is your email?',
+        },
+        {
+            type: 'input',
+            name: 'github',
+            message: 'What is your github username?',
+        },
+    ])
+    .then((data) => {
+        const engineerEmployee = new Engineer(
+            `${data.name}`,`${data.id}`,`${data.email}`,`${data.github}`
+            )
+        
+        employeeData.push(engineerEmployee)
+        
+        fs.writeFile('output/test.html', render(employeeData), function(err){
+            if(err) throw err;
+        })
+
+    });
+}
+
+module.exports = employeeData
+
+
+/*
+{
+    type: 'input',
+    name: 'name',
+    message: 'What is your name?',
+},
+{
+    type: 'input',
+    name: 'id',
+    message: 'What is your id?',
+},
+{
+    type: 'input',
+    name: 'email',
+    message: 'What is your email?',
+}
+*/
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
