@@ -11,16 +11,7 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
 let employeeData = []
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
 
-//Create variable Array of objects
-//Inquirer
-//Ask for role
-//Create sub functions for each role that will use the classes
-//Store the information into an array of objects
-
-render(employeeData)
 addEmployee()
 
 function addEmployee() {
@@ -48,9 +39,12 @@ function addEmployee() {
                 break;
 
             case 'quit':
-                render(employeeData)
+                fs.writeFile('output/team.html', render(employeeData), function(err){
+                    if(err) throw err;
+                })
                 break;
         }
+
     });
 }
 
@@ -83,36 +77,94 @@ function engineerInfo() {
         const engineerEmployee = new Engineer(
             `${data.name}`,`${data.id}`,`${data.email}`,`${data.github}`
             )
-        
-        employeeData.push(engineerEmployee)
-        
-        fs.writeFile('output/test.html', render(employeeData), function(err){
-            if(err) throw err;
-        })
-
+         
+       pushToObjectArray(engineerEmployee)
+       addEmployee()
     });
+}
+
+function internInfo() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is your name?',
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'What is your id?',
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'What is your email?',
+        },
+        {
+            type: 'input',
+            name: 'school',
+            message: 'What school are you currently attending?',
+        },
+    ])
+    .then((data) => {
+        const internEmployee = new Intern(
+            `${data.name}`,`${data.id}`,`${data.email}`,`${data.school}`
+            )
+        
+       pushToObjectArray(internEmployee)
+       addEmployee()
+    });
+}
+
+function managerInfo() {
+    inquirer
+    .prompt([
+        {
+            type: 'input',
+            name: 'name',
+            message: 'What is your name?',
+        },
+        {
+            type: 'input',
+            name: 'id',
+            message: 'What is your id?',
+        },
+        {
+            type: 'input',
+            name: 'email',
+            message: 'What is your email?',
+        },
+        {
+            type: 'input',
+            name: 'officeNumber',
+            message: 'What is your officeNumber?',
+        },
+    ])
+    .then((data) => {
+        const managerEmployee = new Manager(
+            `${data.name}`,`${data.id}`,`${data.email}`,`${data.officeNumber}`
+            )
+
+       pushToObjectArray(managerEmployee)
+       addEmployee
+    });
+}
+
+function pushToObjectArray(data) {
+    employeeData.push(data)
 }
 
 module.exports = employeeData
 
 
-/*
-{
-    type: 'input',
-    name: 'name',
-    message: 'What is your name?',
-},
-{
-    type: 'input',
-    name: 'id',
-    message: 'What is your id?',
-},
-{
-    type: 'input',
-    name: 'email',
-    message: 'What is your email?',
-}
+
+ /*
+    fs.writeFile('output/team.html', render(employeeData), function(err){
+        if(err) throw err;
+    })
 */
+
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
