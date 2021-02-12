@@ -1,5 +1,7 @@
 # TemplateEngine_EmployeeSummary
 
+Video Link: https://drive.google.com/file/d/1ONJuud_Hw1curgKZTGT7c_bpfYr2hvgy/view
+
 ## Description
 
 Using node inquirer, object oriented programming, and jest (to test built classes) to create a html card template of employees in a company.
